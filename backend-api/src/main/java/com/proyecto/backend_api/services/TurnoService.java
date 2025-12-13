@@ -24,7 +24,7 @@ public class TurnoService {
 
     public TurnoRespuestaDTO reservarTurno(TurnoSolicitudDTO datos) {
         // Validar que no exista Turno ya solicitado
-        if (turnoRepository.existeByMedicoYFechaHora(datos.MedicoId(),datos.fechaHora())) {
+        if (turnoRepository.existsByMedicoIdAndFechaHora(datos.MedicoId(),datos.fechaHora())) {
             throw new RuntimeException("El medico ya tiene un turno reservado en esa fecha y hora");
         }
 

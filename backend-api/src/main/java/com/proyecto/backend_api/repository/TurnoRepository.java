@@ -10,5 +10,5 @@ import java.time.LocalDateTime;
 @Repository
 public interface TurnoRepository extends JpaRepository<Turno, Long>{
     // crear automaticamente el SQL basado en el nombre del metodo
-    boolean existeByMedicoYFechaHora(Long medicoId, LocalDateTime fechaHora);
+    boolean existsByMedicoIdAndFechaHora(Long medicoId, LocalDateTime fechaHora);
 }
