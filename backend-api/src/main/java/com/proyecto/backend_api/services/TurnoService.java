@@ -1,5 +1,9 @@
 package com.proyecto.backend_api.services;
 
+import java.time.LocalDate;
+import java.util.stream.Collectors;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,8 @@ import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Paciente;
 import com.proyecto.backend_api.domain.model.Turno;
 import com.proyecto.backend_api.dto.TurnoRespuestaDTO;
+
+
 
 @Service
 public class TurnoService {
@@ -42,13 +48,58 @@ public class TurnoService {
                 .motivoConsulta(datos.motivoDeConsulta())
                 .estado(EstadoTurno.PENDIENTE)
                 .build();
-            turno = turnoRepository.save(turno);
+            return convertirADTO(turnoRepository.save(turno));
+    }
 
-        // convertir a DTO para devolver al front
+    // Lerr Todos (Busqueda Inteligente)
+    public List<TurnoRespuestaDTO> listarTurnos(LocalDate fecha, String ApellidoMedico) {
+        List<Turno> turnos;
+        if (fecha != null) {
+            turnos = turnoRepository.findallByFechaHoraBetween(fecha.atStartOfDay(), fecha.atTime(23,59,59));
+        } else if (ApellidoMedico != null) {
+            turnos = turnoRepository.findAllMedicoApelldioContainingIgnoreCase(ApellidoMedico);
+        } else {
+            turnos = turnoRepository.findAll();
+        }
+        return turnos.stream().map(this::convertirADTO).collect(Collectors.toList());
+    }
+
+    // Leer Uno (Por ID)
+    public TurnoRespuestaDTO obtenerPorId(Long id) {
+        Turno turno = turnoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+        return convertirADTO(turno); 
+    }
+
+    // Actualiazr Turno (Edutar Fecha o Estado)
+    public TurnoRespuestaDTO editarTurno(Long id, TurnoSolicitudDTO datosModificados) {
+        Turno turno = turnoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+  
+        if (datosModificados.fechaHora() != null) {
+            turno.setFechaHora(datosModificados.fechaHora());
+            if (datosModificados.motivoDeConsulta() != null) {
+                turno.setMotivoConsulta(datosModificados.motivoDeConsulta());
+            }
+        }
+        return convertirADTO(turnoRepository.save(turno));
+    }
+
+
+    // Eliminar Turno
+    public void eliminarTurno(Long id) {
+        if (!turnoRepository.existsById(id)) {
+            throw new RuntimeException("No se puede eliminar, el Turno no existe");
+        }
+        turnoRepository.deleteById(id);
+    }
+
+    // Metodo Auxiliar
+    private TurnoRespuestaDTO convertirADTO (Turno turno) {
         return new TurnoRespuestaDTO(
             turno.getId(),
-            medico.getNombre() + " " + medico.getApellido(),
-            paciente.getNombre() + " " + paciente.getApellido(),
+            turno.getMedico().getNombre() + " " + turno.getMedico().getApellido(),
+            turno.getPaciente().getNombre() + " " + turno.getPaciente().getApellido(),
             turno.getFechaHora(),
             turno.getEstado().toString()
         );
