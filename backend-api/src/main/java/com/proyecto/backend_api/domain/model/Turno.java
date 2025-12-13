@@ -24,6 +24,7 @@ public class Turno {
     private EstadoTurno estado;
 
     private String motivoConsulta;
+    
     @ManyToOne
     private Medico medico;
 
