@@ -1,4 +1,4 @@
-package com.proyecto.backend_api.repository;
+package com.proyecto.backend_api.domain.repository;
 
 
 import com.proyecto.backend_api.domain.model.Turno;
@@ -14,8 +14,8 @@ public interface TurnoRepository extends JpaRepository<Turno, Long>{
     boolean existsByMedicoIdAndFechaHora(Long medicoId, LocalDateTime fechaHora);
 
     // Buscar Turno por Apellido del Medico
-    List<Turno> findAllMedicoApelldioContainingIgnoreCase(String apellido);
+    List<Turno> findAllByMedicoApellidoContainingIgnoreCase(String apellido);
 
     // Buscar por Rango de Fechas 
-    List<Turno> findallByFechaHoraBetween(LocalDateTime inicio, LocalDateTime fin);
+    List<Turno> findAllByFechaHoraBetween(LocalDateTime inicio, LocalDateTime fin);
 }

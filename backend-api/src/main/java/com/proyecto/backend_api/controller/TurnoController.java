@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import com.proyecto.backend_api.dto.TurnoRespuestaDTO;
-import com.proyecto.backend_api.dto.TurnoSolicitudDTO;
-import com.proyecto.backend_api.services.TurnoService;
+
+import com.proyecto.backend_api.domain.dto.TurnoSolicitudDTO;
+import com.proyecto.backend_api.domain.dto.response.TurnoRespuestaDTO;
+import com.proyecto.backend_api.domain.services.TurnoService;
 
 @RestController
 @RequestMapping("/api/turnos")
