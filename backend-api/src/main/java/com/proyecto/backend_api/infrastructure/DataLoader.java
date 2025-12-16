@@ -11,7 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import com.proyecto.backend_api.domain.model.Especialidad;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Paciente;
-import com.proyecto.backend_api.repository.*;
+import com.proyecto.backend_api.domain.repository.*;
 
 @Configuration
 public class DataLoader {

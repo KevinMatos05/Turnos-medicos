@@ -1,4 +1,4 @@
-package com.proyecto.backend_api.repository;
+package com.proyecto.backend_api.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.proyecto.backend_api.domain.model.Especialidad;

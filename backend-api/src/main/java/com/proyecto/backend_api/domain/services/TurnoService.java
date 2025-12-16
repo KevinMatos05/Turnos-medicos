@@ -1,4 +1,4 @@
-package com.proyecto.backend_api.services;
+package com.proyecto.backend_api.domain.services;
 
 import java.time.LocalDate;
 import java.util.stream.Collectors;
@@ -7,15 +7,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto.backend_api.dto.TurnoSolicitudDTO;
-import com.proyecto.backend_api.repository.MedicoRepository;
-import com.proyecto.backend_api.repository.PacienteRepository;
-import com.proyecto.backend_api.repository.TurnoRepository;
+import com.proyecto.backend_api.domain.dto.TurnoSolicitudDTO;
+import com.proyecto.backend_api.domain.dto.response.TurnoRespuestaDTO;
 import com.proyecto.backend_api.domain.enums.EstadoTurno;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Paciente;
 import com.proyecto.backend_api.domain.model.Turno;
-import com.proyecto.backend_api.dto.TurnoRespuestaDTO;
+import com.proyecto.backend_api.domain.repository.MedicoRepository;
+import com.proyecto.backend_api.domain.repository.PacienteRepository;
+import com.proyecto.backend_api.domain.repository.TurnoRepository;
 
 
 
@@ -55,9 +55,9 @@ public class TurnoService {
     public List<TurnoRespuestaDTO> listarTurnos(LocalDate fecha, String ApellidoMedico) {
         List<Turno> turnos;
         if (fecha != null) {
-            turnos = turnoRepository.findallByFechaHoraBetween(fecha.atStartOfDay(), fecha.atTime(23,59,59));
+            turnos = turnoRepository.findAllByFechaHoraBetween(fecha.atStartOfDay(), fecha.atTime(23,59,59));
         } else if (ApellidoMedico != null) {
-            turnos = turnoRepository.findAllMedicoApelldioContainingIgnoreCase(ApellidoMedico);
+            turnos = turnoRepository.findAllByMedicoApellidoContainingIgnoreCase(ApellidoMedico);
         } else {
             turnos = turnoRepository.findAll();
         }
