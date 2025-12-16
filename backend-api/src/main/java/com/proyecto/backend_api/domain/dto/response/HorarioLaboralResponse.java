@@ -1,6 +1,7 @@
 package com.proyecto.backend_api.domain.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TurnoRespuestaDTO {
+public class HorarioLaboralResponse {
     private Long id;
-    private Long pacienteId;
-    private Long medicoId;
-    private LocalDateTime fechaHora;
-    private String estado;
-    private String especialidad;
-    
+    private DayOfWeek diaSemana;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 }

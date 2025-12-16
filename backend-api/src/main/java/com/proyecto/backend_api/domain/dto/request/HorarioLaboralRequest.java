@@ -1,8 +1,8 @@
 package com.proyecto.backend_api.domain.dto.request;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,16 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ActualizarHorarioRequest {
-    @NotNull
-    private Long medicoId;
+public class HorarioLaboralRequest {
+    @NotNull(message = "El dia de la semana es obligatorio")
+    private DayOfWeek diaSemana;
 
-    @NotNull
-    private String diaSemana;
-
-    @NotNull
+    @NotNull(message = "La hora de inicio es obligatoria")
     private LocalTime horaInicio;
 
-    @NotNull
+    @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 }
