@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MedicoRespuestaDTO {
+public class PacienteResponse {
     private Long id;
-    private String nombre;
-    private String apellido;
-    private String email;
-    private String especialidad;
+    private String nombreCompleto;
+    private String documento;
     private String telefono;
+    private String email;
+    private String direccion;
+    private String obraSocial;
+    private String numeroAfiliado;
+    private Boolean activo;
 }

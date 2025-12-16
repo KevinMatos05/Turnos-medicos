@@ -1,7 +1,5 @@
 package com.proyecto.backend_api.domain.dto.response;
 
-import com.proyecto.backend_api.domain.enums.Rol;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UsuarioResponse {
+
+public class SucursalResponse {
     private Long id;
-    private String email;
     private String nombre;
-    private String apellido;
+    private String direccion;
+    private String ciudad;
+    private String provincia;
     private String telefono;
-    private Rol rol;
-    private Boolean activo;
+    private Boolean activa;
 }
