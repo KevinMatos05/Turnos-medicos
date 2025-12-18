@@ -1,6 +1,9 @@
 package com.proyecto.backend_api.domain.dto.request;
 
 import jakarta.validation.constraints.Size;
+
+import com.proyecto.backend_api.domain.enums.Rol;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,8 +34,9 @@ public class RegistroUsuarioRequest {
 
     private String telefono;
     
+    
     @NotNull(message = "el rol es obligatorio")
-
+    private Rol rol;
     // Campos para paciente
     private String documento;
     private String direccion;
