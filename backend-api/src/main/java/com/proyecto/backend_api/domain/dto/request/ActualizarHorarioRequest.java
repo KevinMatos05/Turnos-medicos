@@ -2,7 +2,6 @@ package com.proyecto.backend_api.domain.dto.request;
 
 import java.time.LocalTime;
 
-import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
