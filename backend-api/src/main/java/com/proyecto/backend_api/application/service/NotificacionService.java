@@ -72,11 +72,12 @@ public class NotificacionService {
             notificacion.setFechaEnvio(LocalDateTime.now());
             notificacionRepository.save(notificacion);
         } catch (Exception e) {
-            // TODO: handle exception
+            logger.error("Error al enviar notificación de cancelación para turno ID: {}", turno.getId(), e);
         }
-        }
+    }
 
-        private void enviarRecordatorio(Turno turno) {
+    @Transactional
+    public void enviarRecordatorio(Turno turno) {
         String asunto = "Recordatorio de Turno Médico";
         String mensaje = construirMensajeRecordatorio(turno);
         
@@ -98,7 +99,6 @@ public class NotificacionService {
             notificacionRepository.save(notificacion);
         } catch (Exception e) {
             logger.error("Error al enviar recordatorio para turno ID: {}", turno.getId(), e);
-            throw new RuntimeException("Error al enviar recordatorio", e);
         }
     }
     
@@ -186,6 +186,35 @@ public class NotificacionService {
             turno.getTipoConsulta(),
             turno.getSucursal() != null ? turno.getSucursal().getNombre() : "Por definir"
         );
+    }
+
+    @Transactional
+    public void enviarNotificacion(Turno turno) {
+        logger.info("Enviando notificación de confirmación para turno ID: {}", turno.getId());
+        
+        String asunto = "Confirmación de Turno Médico";
+        String mensaje = construirMensajeConfirmacion(turno);
+        
+        Notificacion notificacion = Notificacion.builder()
+            .usuario(turno.getPaciente().getUsuario())
+            .tipo(TipoNotificacion.CONFIRMACION_TURNO)
+            .asunto(asunto)
+            .mensaje(mensaje)
+            .emailEnviado(false)
+            .leida(false)
+            .build();
+        
+        notificacion = notificacionRepository.save(notificacion);
+        
+        try {
+            enviarEmailNotificacion(notificacion);
+            notificacion.setEmailEnviado(true);
+            notificacion.setFechaEnvio(LocalDateTime.now());
+            notificacionRepository.save(notificacion);
+            logger.info("Notificación de confirmación enviada exitosamente para turno ID: {}", turno.getId());
+        } catch (Exception e) {
+            logger.error("Error al enviar email de confirmación para turno ID: {}", turno.getId(), e);
+        }
     }
 
 
