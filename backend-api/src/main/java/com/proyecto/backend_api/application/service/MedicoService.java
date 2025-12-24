@@ -12,7 +12,7 @@ import com.proyecto.backend_api.domain.dto.request.RegistroUsuarioRequest;
 import com.proyecto.backend_api.domain.dto.response.MedicoResponse;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Usuario;
-import com.proyecto.backend_api.domain.repository.EspecilidadRepository;
+import com.proyecto.backend_api.domain.repository.EspecialidadRepository;
 import com.proyecto.backend_api.domain.repository.MedicoRepository;
 import com.proyecto.backend_api.domain.repository.SucursalRepository;
 import com.proyecto.backend_api.domain.repository.UsuarioRepository;
@@ -21,12 +21,12 @@ import com.proyecto.backend_api.domain.repository.UsuarioRepository;
 public class MedicoService {
     private final MedicoRepository medicoRepository;
     private final UsuarioRepository usuarioRepository;
-    private final EspecilidadRepository especilidadRepository;
+    private final EspecialidadRepository especilidadRepository;
     private final SucursalRepository sucursalRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public MedicoService(MedicoRepository medicoRepository, UsuarioRepository usuarioRepository, EspecilidadRepository especilidadRepository, SucursalRepository sucursalRepository, PasswordEncoder passwordEncoder) {
+    public MedicoService(MedicoRepository medicoRepository, UsuarioRepository usuarioRepository, EspecialidadRepository especilidadRepository, SucursalRepository sucursalRepository, PasswordEncoder passwordEncoder) {
         this.medicoRepository = medicoRepository;
         this.usuarioRepository = usuarioRepository;
         this.especilidadRepository = especilidadRepository;

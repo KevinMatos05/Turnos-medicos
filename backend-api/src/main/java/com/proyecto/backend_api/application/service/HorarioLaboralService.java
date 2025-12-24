@@ -54,7 +54,7 @@ public class HorarioLaboralService {
         return horarioLaboralRepository.save(horarioActualizado);
     }
 
-    public HorarioLaboral acutHorarioLaboral(Long id, ActualizarHorarioRequest request) {
+    public HorarioLaboral actualizarHorario(Long id, ActualizarHorarioRequest request) {
         HorarioLaboral horario = horarioLaboralRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
         
