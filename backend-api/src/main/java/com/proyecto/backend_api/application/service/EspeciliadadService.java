@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.backend_api.domain.dto.response.EspecialidadResponse;
 import com.proyecto.backend_api.domain.model.Especialidad;
-import com.proyecto.backend_api.domain.repository.EspecilidadRepository;
+import com.proyecto.backend_api.domain.repository.EspecialidadRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class EspeciliadadService {
-    private final EspecilidadRepository especilidadRepository;
+    private final EspecialidadRepository especilidadRepository;
     
     @Autowired
-    public EspeciliadadService(EspecilidadRepository especilidadRepository)  {
+    public EspeciliadadService(EspecialidadRepository especilidadRepository)  {
         this.especilidadRepository = especilidadRepository;
     }
 
