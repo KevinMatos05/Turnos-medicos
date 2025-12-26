@@ -11,6 +11,7 @@ import com.proyecto.backend_api.domain.dto.request.RegistroUsuarioRequest;
 import com.proyecto.backend_api.domain.dto.response.UsuarioResponse;
 import com.proyecto.backend_api.domain.model.Usuario;
 import com.proyecto.backend_api.domain.repository.UsuarioRepository;
+import com.proyecto.backend_api.infrastructure.JwtTokenProvider;
 
 @Service
 public class AuthService {
@@ -20,10 +21,14 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     public UsuarioResponse login(LoginRequest loginRequest) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(loginRequest.getEmail());
         if (usuarioOpt.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), usuarioOpt.get().getPassword())){
             Usuario usuario = usuarioOpt.get();
+            String token = jwtTokenProvider.generateToken(usuario.getEmail());
             return UsuarioResponse.builder()
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
@@ -32,6 +37,7 @@ public class AuthService {
                 .telefono(usuario.getTelefono())
                 .rol(usuario.getRol())
                 .activo(usuario.getActivo())
+                .token(token)
                 .build();
         }
         throw new RuntimeException("Credenciales inválidas");   
