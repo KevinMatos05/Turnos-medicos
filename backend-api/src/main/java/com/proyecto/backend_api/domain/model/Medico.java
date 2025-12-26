@@ -42,7 +42,7 @@ public class Medico {
     @Builder.Default
     private Integer duracionTurnoMinutos = 30;
 
-    @OneToMany(mappedBy = "medioc", cascade =CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<HorarioLaboral> horariosLaborales = new ArrayList<>();   
     

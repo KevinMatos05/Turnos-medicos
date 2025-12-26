@@ -33,6 +33,10 @@ public class Notificacion {
     @JoinColumn(name= "usuario_id")
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "turno_id")
+    private Turno turno;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo",nullable = false)
     private TipoNotificacion tipo;

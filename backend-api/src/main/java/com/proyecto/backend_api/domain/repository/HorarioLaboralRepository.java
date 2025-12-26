@@ -16,13 +16,13 @@ public interface HorarioLaboralRepository extends JpaRepository<HorarioLaboral, 
 
     List<HorarioLaboral> findByMedicoAndDiaSemana(Medico medico, DayOfWeek diaSemana);
 
-    @Query("SELECT h FROM HorarioLaboral h WHERE h.medico.id =: medicoId")
+    @Query("SELECT h FROM HorarioLaboral h WHERE h.medico.id = :medicoId")
     List<HorarioLaboral> findByMedicoId(@Param("medicoId") Long medicoId);
 
     @Query("SELECT h FROM HorarioLaboral h WHERE h.medico.id = :medicoId AND h.diaSemana = :diaSemana")
     List<HorarioLaboral> findByMedicoAndDiaSemana(@Param("medicoId") Long medicoId, @Param("diaSemana") DayOfWeek diaSemana);
 
-    @Query("SELECT h FROM HorarioLaboral h WHERE h.medico.id = :medicoId AND h.diaSemana = :diaSemana = :diaSemana AND h.horaInicio <= :horaInicio AND h.horaFin >= :horaFin")
+    @Query("SELECT h FROM HorarioLaboral h WHERE h.medico.id = :medicoId AND h.diaSemana = :diaSemana AND h.horaInicio <= :horaInicio AND h.horaFin >= :horaFin")
     List<HorarioLaboral> findByMedicoAndDiaSemanaAndHoraInicioLessThanEqualAndHoraFinGreaterThanEqual(@Param("medicoId") Long medicoId, @Param("diaSemana") DayOfWeek diaSemana, @Param("horaInicio") LocalTime horaInicio, @Param("horaFin") LocalTime horaFin);
 
     void deleteByMedico(Medico medico);
