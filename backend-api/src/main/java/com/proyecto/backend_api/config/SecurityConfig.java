@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/especialidades/**").permitAll()
                 .requestMatchers("/api/medicos/buscar").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/medicos/mi-agenda").hasRole("MEDICO")
                 .requestMatchers("/api/pacientes/mis-turnos").hasRole("PACIENTE")

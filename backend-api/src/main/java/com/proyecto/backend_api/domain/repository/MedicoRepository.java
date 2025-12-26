@@ -25,9 +25,9 @@ public interface MedicoRepository extends JpaRepository <Medico, Long> {
     Optional<Medico> findByMatricula(String matricula);
 
     @Query("SELECT m FROM Medico m WHERE m.especialidad.id = :especialidadId AND m.activo = true")
-    List<Medico> findByEspecialidadId(@Param("especiliadadId") Long especialidadId);
+    List<Medico> findByEspecialidadId(@Param("especialidadId") Long especialidadId);
 
-    @Query("SELECT m FROM Medico m JOIN m.horariosLaborales h WHERE h.diaSeamana = :diaSemana AND m.activo = true")
+    @Query("SELECT m FROM Medico m JOIN m.horariosLaborales h WHERE h.diaSemana = :diaSemana AND m.activo = true")
     List<Medico> findByDiaDisponible(@Param("diaSemana") DayOfWeek diaSemana);
     
 }

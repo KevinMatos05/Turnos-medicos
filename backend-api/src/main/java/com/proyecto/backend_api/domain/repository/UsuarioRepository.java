@@ -11,8 +11,6 @@ import com.proyecto.backend_api.domain.model.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     Optional<Usuario> findByEmail(String email);
 
-    Optional<Usuario> findByUsername(String email);
-
     Boolean existsByEmail(String email);
 
     List<Usuario> findByRol(Rol rol);
