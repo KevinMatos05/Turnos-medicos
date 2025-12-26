@@ -13,6 +13,7 @@ import com.proyecto.backend_api.domain.enums.TipoNotificacion;
 import com.proyecto.backend_api.domain.model.Notificacion;
 import com.proyecto.backend_api.domain.model.Turno;
 import com.proyecto.backend_api.domain.repository.NotificacionRepository;
+import com.proyecto.backend_api.domain.repository.TurnoRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -23,11 +24,13 @@ public class NotificacionService {
     
     private final NotificacionRepository notificacionRepository;
     private final EmailService emailService;
+    private final TurnoRepository turnoRepository;
 
     @Autowired
-    public NotificacionService(NotificacionRepository notificacionRepository, EmailService emailService) {
+    public NotificacionService(NotificacionRepository notificacionRepository, EmailService emailService, TurnoRepository turnoRepository) {
         this.notificacionRepository = notificacionRepository;
         this.emailService = emailService;
+        this.turnoRepository = turnoRepository;
     }
 
     public Notificacion crearNotificacion(Notificacion notificacion){
@@ -216,6 +219,36 @@ public class NotificacionService {
             logger.error("Error al enviar email de confirmación para turno ID: {}", turno.getId(), e);
         }
     }
+    @Transactional
+    public void enviarRecordatoriosTurnos() {
+        logger.info("Iniciando envío de recordatorios de turnos");
+        
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime limite = ahora.plusHours(24);
+        
+        // Obtener turnos confirmados próximos
+        List<Turno> turnosProximos = turnoRepository.findTurnosParaRecordatorio(ahora, limite);
+        
+        logger.info("Se encontraron {} turnos para enviar recordatorios", turnosProximos.size());
+        
+        for (Turno turno : turnosProximos) {
+            try {
+                // Verificar si ya se envió un recordatorio para este turno
+                List<Notificacion> notificacionesExistentes = notificacionRepository
+                    .findByTurnoAndTipo(turno, TipoNotificacion.RECORDATORIO_TURNO);
+                
+                if (notificacionesExistentes.isEmpty()) {
+                    enviarRecordatorio(turno);
+                    logger.info("Recordatorio enviado para turno ID: {}", turno.getId());
+                }
+            } catch (Exception e) {
+                logger.error("Error al enviar recordatorio para turno ID: {}", turno.getId(), e);
+            }
+        }
+        
+        logger.info("Finalizado envío de recordatorios de turnos");
+    }
+    
 
 
 }
