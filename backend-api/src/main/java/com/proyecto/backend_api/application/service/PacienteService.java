@@ -54,12 +54,18 @@ public class PacienteService {
     }
 
     public UsuarioResponse registrarPaciente(RegistroUsuarioRequest request) {
+        // Verificar si el email ya existe
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("El email ya está registrado");
+        }
+
         Usuario usuario = Usuario.builder()
             .email(request.getEmail())
-            .password(request.getPassword())
+            .password(passwordEncoder.encode(request.getPassword()))
             .nombre(request.getNombre())
             .apellido(request.getApellido())
-            .rol(request.getRol())
+            .telefono(request.getTelefono())
+            .rol(com.proyecto.backend_api.domain.enums.Rol.PACIENTE)
             .activo(true)
             .build();
         usuario = usuarioRepository.save(usuario);
@@ -76,9 +82,10 @@ public class PacienteService {
             .id(usuario.getId())
             .nombre(usuario.getNombre())
             .apellido(usuario.getApellido())
-            .email(usuario.getApellido())
+            .email(usuario.getEmail())
             .telefono(usuario.getTelefono())
             .rol(usuario.getRol())
+            .activo(usuario.getActivo())
             .build();
     }
 

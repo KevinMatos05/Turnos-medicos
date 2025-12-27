@@ -86,13 +86,19 @@ public class MedicoService {
     }
 
     private Medico convertirRequestAMedico(RegistroUsuarioRequest request){
+        // Verificar si el email ya existe
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("El email ya está registrado");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setNombre(request.getNombre());
         usuario.setApellido(request.getApellido());
         usuario.setTelefono(request.getTelefono());
-        usuario.setRol(request.getRol());
+        usuario.setRol(com.proyecto.backend_api.domain.enums.Rol.MEDICO);
+        usuario.setActivo(true);
         usuario = usuarioRepository.save(usuario);
 
         Medico medico = new Medico();
