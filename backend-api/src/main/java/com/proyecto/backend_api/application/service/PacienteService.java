@@ -121,6 +121,9 @@ public class PacienteService {
         pacienteRepository.deleteById(id);
     }
 
-
+    public Paciente obtenerPacienteById(Long id) {
+        return pacienteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Paciente no encontrado con id: " + id));
+    }
 
 }

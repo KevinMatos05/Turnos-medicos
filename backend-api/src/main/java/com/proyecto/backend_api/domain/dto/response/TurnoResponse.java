@@ -58,12 +58,12 @@ public class TurnoResponse {
         if (turno.getSucursal()!= null) {
             this.sucursal = SucursalResponse.builder()
                 .id(turno.getSucursal().getId())
-                .nombre(getSucursal().getNombre())
+                .nombre(turno.getSucursal().getNombre())
                 .direccion(turno.getSucursal().getDireccion())
                 .ciudad(turno.getSucursal().getCiudad())
                 .provincia(turno.getSucursal().getProvincia())
                 .telefono(turno.getSucursal().getTelefono())
-                .activa(turno.getSucursal().getActiva())
+                .activo(turno.getSucursal().getActivo())
                 .build();
         }
 

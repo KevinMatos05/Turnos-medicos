@@ -1,12 +1,12 @@
 package com.proyecto.backend_api.domain.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 
 @Data
@@ -14,6 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class DisponibilidadResponse {
-    private LocalDateTime fecha;
-    private List<LocalDateTime> horasDisponibles;
+    private Long medicoId;
+    private String medicoNombre;
+    private LocalDate fecha;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
+    private Boolean disponible;
 }
