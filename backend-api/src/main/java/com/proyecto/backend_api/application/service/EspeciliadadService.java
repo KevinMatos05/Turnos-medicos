@@ -32,6 +32,32 @@ public class EspeciliadadService {
             .map(this::mapToResponse)
             .collect(Collectors.toList());
     }
+    
+    @Transactional
+    public EspecialidadResponse crear(String nombre, String descripcion) {
+        Especialidad especialidad = new Especialidad();
+        especialidad.setNombre(nombre);
+        especialidad.setDescripcion(descripcion);
+        especialidad.setActivo(true);
+        Especialidad saved = especilidadRepository.save(especialidad);
+        return mapToResponse(saved);
+    }
+    
+    @Transactional
+    public EspecialidadResponse actualizar(Long id, String nombre, String descripcion, Boolean activo) {
+        Especialidad especialidad = especilidadRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+        especialidad.setNombre(nombre);
+        especialidad.setDescripcion(descripcion);
+        especialidad.setActivo(activo);
+        Especialidad saved = especilidadRepository.save(especialidad);
+        return mapToResponse(saved);
+    }
+    
+    @Transactional
+    public void eliminar(Long id) {
+        especilidadRepository.deleteById(id);
+    }
 
     private EspecialidadResponse mapToResponse(Especialidad especialidad) {
         return EspecialidadResponse.builder()

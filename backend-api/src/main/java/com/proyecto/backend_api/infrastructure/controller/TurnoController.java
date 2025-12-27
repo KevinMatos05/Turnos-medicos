@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -83,6 +84,42 @@ public class TurnoController {
 
     public ResponseEntity<Void> cancelarTurno(@PathVariable Long id) {
         turnoService.cancelarTurno(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/{id}/confirmar")
+    @Operation(summary = "Confirmar turno", description = "Confirma un turno en estado PENDIENTE")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Turno confirmado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Turno no encontrado"),
+        @ApiResponse(responseCode = "400", description = "El turno no está en estado PENDIENTE")
+    })
+    public ResponseEntity<TurnoResponse> confirmarTurno(@PathVariable Long id) {
+        TurnoResponse turno = turnoService.confirmarTurno(id);
+        return ResponseEntity.ok(turno);
+    }
+    
+    @PutMapping("/{id}/marcar-asistencia")
+    @Operation(summary = "Marcar asistencia", description = "Marca que el paciente asistió al turno y permite agregar observaciones")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Asistencia registrada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Turno no encontrado")
+    })
+    public ResponseEntity<Void> marcarAsistencia(
+            @PathVariable Long id,
+            @org.springframework.web.bind.annotation.RequestBody(required = false) String observaciones) {
+        turnoService.marcarAsistencia(id, observaciones);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/{id}/marcar-inasistencia")
+    @Operation(summary = "Marcar inasistencia", description = "Marca que el paciente no asistió al turno")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Inasistencia registrada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Turno no encontrado")
+    })
+    public ResponseEntity<Void> marcarInasistencia(@PathVariable Long id) {
+        turnoService.marcarInasistencia(id);
         return ResponseEntity.noContent().build();
     }
 }

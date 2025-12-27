@@ -92,7 +92,7 @@ public class DataLoader implements CommandLineRunner {
                 .provincia("Buenos Aires")
                 .telefono("011-4567-8900")
                 .email("central@turnosmedicos.com")
-                .activa(true)
+                .activo(true)
                 .build(),
             Sucursal.builder()
                 .nombre("Clínica Norte")
@@ -101,7 +101,7 @@ public class DataLoader implements CommandLineRunner {
                 .provincia("Buenos Aires")
                 .telefono("011-4567-8901")
                 .email("norte@turnosmedicos.com")
-                .activa(true)
+                .activo(true)
                 .build(),
             Sucursal.builder()
                 .nombre("Centro Médico Sur")
@@ -110,7 +110,7 @@ public class DataLoader implements CommandLineRunner {
                 .provincia("Buenos Aires")
                 .telefono("011-4567-8902")
                 .email("sur@turnosmedicos.com")
-                .activa(true)
+                .activo(true)
                 .build()
         );
 

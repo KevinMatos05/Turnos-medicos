@@ -35,7 +35,7 @@ public class Sucursal {
 
     private String email;
 
-    @Column(name = "activa")
+    @Column(name = "activo")
     @Builder.Default
-    private Boolean activa = true;
+    private Boolean activo = true;
 }

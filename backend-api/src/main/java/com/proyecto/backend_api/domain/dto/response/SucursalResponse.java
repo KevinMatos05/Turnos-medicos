@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class SucursalResponse {
     private Long id;
     private String nombre;
@@ -17,5 +16,5 @@ public class SucursalResponse {
     private String ciudad;
     private String provincia;
     private String telefono;
-    private Boolean activa;
+    private Boolean activo;
 }

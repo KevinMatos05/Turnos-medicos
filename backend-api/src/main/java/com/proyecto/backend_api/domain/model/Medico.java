@@ -49,6 +49,10 @@ public class Medico {
     @OneToMany(mappedBy = "medico")
     @Builder.Default
     private List<Turno> turnos = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DiaBloqueo> diasBloqueados = new ArrayList<>();
 
     @Transient
     public String getNombreCompleto() {

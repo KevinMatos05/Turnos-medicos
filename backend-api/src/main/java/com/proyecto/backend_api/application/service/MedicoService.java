@@ -59,6 +59,14 @@ public class MedicoService {
             .map(this::convertirMedicoAResponse)
             .collect(Collectors.toList());        
     }
+    
+    public List<MedicoResponse> obtenerMedicosPorEspecialidad(Long especialidadId) {
+        return medicoRepository.findAll().stream()
+            .filter(medico -> medico.getEspecialidad() != null && 
+                             medico.getEspecialidad().getId().equals(especialidadId))
+            .map(this::convertirMedicoAResponse)
+            .collect(Collectors.toList());
+    }
 
     public MedicoResponse obtenerMedicoPorId(Long id) {
         Medico medico = findById(id)
