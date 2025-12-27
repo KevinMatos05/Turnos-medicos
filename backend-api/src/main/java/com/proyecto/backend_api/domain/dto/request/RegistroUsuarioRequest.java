@@ -6,7 +6,6 @@ import com.proyecto.backend_api.domain.enums.Rol;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,9 +33,9 @@ public class RegistroUsuarioRequest {
 
     private String telefono;
     
-    
-    @NotNull(message = "el rol es obligatorio")
+    // El rol se asigna automáticamente según el endpoint usado
     private Rol rol;
+    
     // Campos para paciente
     private String documento;
     private String direccion;
