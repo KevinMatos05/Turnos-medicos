@@ -7,9 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.proyecto.backend_api.domain.dto.request.RegistroUsuarioRequest;
+import com.proyecto.backend_api.domain.dto.response.EspecialidadResponse;
 import com.proyecto.backend_api.domain.dto.response.MedicoResponse;
+import com.proyecto.backend_api.domain.dto.response.SucursalResponse;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Usuario;
 import com.proyecto.backend_api.domain.repository.EspecialidadRepository;
@@ -54,12 +57,14 @@ public class MedicoService {
         return convertirMedicoAResponse(medico);
     }
 
+    @Transactional(readOnly = true)
     public List<MedicoResponse> obtenerMedicos() {
         return findAll().stream()
             .map(this::convertirMedicoAResponse)
             .collect(Collectors.toList());        
     }
     
+    @Transactional(readOnly = true)
     public List<MedicoResponse> obtenerMedicosPorEspecialidad(Long especialidadId) {
         return medicoRepository.findAll().stream()
             .filter(medico -> medico.getEspecialidad() != null && 
@@ -68,6 +73,7 @@ public class MedicoService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public MedicoResponse obtenerMedicoPorId(Long id) {
         Medico medico = findById(id)
         .orElseThrow(() -> new RuntimeException("Medico no encontrado con id: " + id));
@@ -136,12 +142,36 @@ public class MedicoService {
     }
 
     private MedicoResponse convertirMedicoAResponse(Medico medico) {
-        return MedicoResponse.builder()
+        MedicoResponse.MedicoResponseBuilder builder = MedicoResponse.builder()
             .id(medico.getId())
-            .nombreCompleto(medico.getUsuario().getNombre() + " " + medico.getUsuario().getApellido())
             .matricula(medico.getMatricula())
-            .activo(medico.getActivo())
-            .build();
+            .duracionTurnoMinutos(medico.getDuracionTurnoMinutos())
+            .activo(medico.getActivo());
+        
+        // Verificar que el usuario no sea null antes de acceder
+        if (medico.getUsuario() != null) {
+            builder.nombreCompleto(medico.getUsuario().getNombre() + " " + medico.getUsuario().getApellido());
+        }
+        
+        // Agregar especialidad si existe
+        if (medico.getEspecialidad() != null) {
+            builder.especialidad(EspecialidadResponse.builder()
+                .id(medico.getEspecialidad().getId())
+                .nombre(medico.getEspecialidad().getNombre())
+                .descripcion(medico.getEspecialidad().getDescripcion())
+                .build());
+        }
+        
+        // Agregar sucursal si existe
+        if (medico.getSucursal() != null) {
+            builder.sucursal(SucursalResponse.builder()
+                .id(medico.getSucursal().getId())
+                .nombre(medico.getSucursal().getNombre())
+                .direccion(medico.getSucursal().getDireccion())
+                .build());
+        }
+        
+        return builder.build();
     }
 
 }

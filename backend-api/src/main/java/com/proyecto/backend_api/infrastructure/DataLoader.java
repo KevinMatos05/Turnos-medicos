@@ -2,9 +2,13 @@ package com.proyecto.backend_api.infrastructure;
 
 import com.proyecto.backend_api.domain.enums.Rol;
 import com.proyecto.backend_api.domain.model.Especialidad;
+import com.proyecto.backend_api.domain.model.Medico;
+import com.proyecto.backend_api.domain.model.Paciente;
 import com.proyecto.backend_api.domain.model.Sucursal;
 import com.proyecto.backend_api.domain.model.Usuario;
 import com.proyecto.backend_api.domain.repository.EspecialidadRepository;
+import com.proyecto.backend_api.domain.repository.MedicoRepository;
+import com.proyecto.backend_api.domain.repository.PacienteRepository;
 import com.proyecto.backend_api.domain.repository.SucursalRepository;
 import com.proyecto.backend_api.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +29,8 @@ public class DataLoader implements CommandLineRunner {
     private final EspecialidadRepository especialidadRepository;
     private final SucursalRepository sucursalRepository;
     private final UsuarioRepository usuarioRepository;
+    private final MedicoRepository medicoRepository;
+    private final PacienteRepository pacienteRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -38,6 +45,10 @@ public class DataLoader implements CommandLineRunner {
         
         if (usuarioRepository.count() == 0) {
             cargarUsuariosIniciales();
+        }
+        
+        if (medicoRepository.count() == 0) {
+            cargarMedicosYPacientesIniciales();
         }
         
         log.info("✅ Datos iniciales cargados correctamente");
@@ -159,5 +170,101 @@ public class DataLoader implements CommandLineRunner {
         log.info("   👤 Admin: admin@turnosmedicos.com / admin123");
         log.info("   👤 Paciente: paciente@test.com / paciente123");
         log.info("   👤 Médico: medico@test.com / medico123");
+    }
+    
+    private void cargarMedicosYPacientesIniciales() {
+        // Obtener especialidades y sucursales
+        List<Especialidad> especialidades = especialidadRepository.findAll();
+        List<Sucursal> sucursales = sucursalRepository.findAll();
+        
+        if (especialidades.isEmpty() || sucursales.isEmpty()) {
+            log.warn("⚠️ No se pueden crear médicos sin especialidades o sucursales");
+            return;
+        }
+        
+        // Crear médicos de prueba
+        Usuario medico1User = Usuario.builder()
+                .email("dr.garcia@turnosmedicos.com")
+                .password(passwordEncoder.encode("medico123"))
+                .nombre("Carlos")
+                .apellido("García")
+                .telefono("011-4444-4444")
+                .rol(Rol.MEDICO)
+                .activo(true)
+                .build();
+        usuarioRepository.save(medico1User);
+        
+        Medico medico1 = Medico.builder()
+                .usuario(medico1User)
+                .matricula("MN-12345")
+                .especialidad(especialidades.get(0)) // Cardiología
+                .sucursal(sucursales.get(0))
+                .duracionTurnoMinutos(30)
+                .activo(true)
+                .build();
+        medicoRepository.save(medico1);
+        
+        Usuario medico2User = Usuario.builder()
+                .email("dra.lopez@turnosmedicos.com")
+                .password(passwordEncoder.encode("medico123"))
+                .nombre("Ana")
+                .apellido("López")
+                .telefono("011-5555-5555")
+                .rol(Rol.MEDICO)
+                .activo(true)
+                .build();
+        usuarioRepository.save(medico2User);
+        
+        Medico medico2 = Medico.builder()
+                .usuario(medico2User)
+                .matricula("MN-67890")
+                .especialidad(especialidades.size() > 1 ? especialidades.get(1) : especialidades.get(0)) // Dermatología
+                .sucursal(sucursales.size() > 1 ? sucursales.get(1) : sucursales.get(0))
+                .duracionTurnoMinutos(20)
+                .activo(true)
+                .build();
+        medicoRepository.save(medico2);
+        
+        Usuario medico3User = Usuario.builder()
+                .email("dr.martinez@turnosmedicos.com")
+                .password(passwordEncoder.encode("medico123"))
+                .nombre("Roberto")
+                .apellido("Martínez")
+                .telefono("011-6666-6666")
+                .rol(Rol.MEDICO)
+                .activo(true)
+                .build();
+        usuarioRepository.save(medico3User);
+        
+        Medico medico3 = Medico.builder()
+                .usuario(medico3User)
+                .matricula("MN-11111")
+                .especialidad(especialidades.size() > 2 ? especialidades.get(2) : especialidades.get(0)) // Pediatría
+                .sucursal(sucursales.get(0))
+                .duracionTurnoMinutos(30)
+                .activo(true)
+                .build();
+        medicoRepository.save(medico3);
+        
+        // Crear paciente de prueba completo
+        Usuario pacienteUser = usuarioRepository.findByEmail("paciente@test.com").orElse(null);
+        if (pacienteUser != null) {
+            Paciente paciente = Paciente.builder()
+                    .usuario(pacienteUser)
+                    .documento("12345678")
+                    .fechaNacimiento(LocalDate.of(1990, 5, 15))
+                    .direccion("Calle Falsa 123")
+                    .obraSocial("OSDE")
+                    .numeroAfiliado("123456789")
+                    .activo(true)
+                    .build();
+            pacienteRepository.save(paciente);
+        }
+        
+        log.info("✅ Médicos de prueba creados:");
+        log.info("   🩺 Dr. García (Cardiología) - dr.garcia@turnosmedicos.com / medico123");
+        log.info("   🩺 Dra. López (Dermatología) - dra.lopez@turnosmedicos.com / medico123");
+        log.info("   🩺 Dr. Martínez (Pediatría) - dr.martinez@turnosmedicos.com / medico123");
+        log.info("✅ Paciente de prueba completo creado");
     }
 }

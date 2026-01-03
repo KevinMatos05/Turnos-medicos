@@ -61,16 +61,16 @@ const PacienteDashboard = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button className="p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left">
+          <a href="/paciente/nuevo-turno" className="p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-left block">
             <Calendar className="h-8 w-8 text-blue-600 mb-2" />
             <h3 className="font-semibold text-gray-900">Solicitar Nuevo Turno</h3>
             <p className="text-sm text-gray-600">Agenda una cita con tu médico</p>
-          </button>
-          <button className="p-4 border-2 border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left">
+          </a>
+          <a href="/paciente/turnos" className="p-4 border-2 border-green-200 rounded-lg hover:bg-green-50 transition-colors text-left block">
             <CheckCircle className="h-8 w-8 text-green-600 mb-2" />
             <h3 className="font-semibold text-gray-900">Ver Mis Turnos</h3>
             <p className="text-sm text-gray-600">Revisa tus citas programadas</p>
-          </button>
+          </a>
         </div>
       </div>
 
