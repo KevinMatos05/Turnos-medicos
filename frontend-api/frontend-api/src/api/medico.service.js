@@ -13,6 +13,12 @@ export const medicoService = {
     return response.data;
   },
 
+  // Listar médicos por especialidad
+  listarMedicosPorEspecialidad: async (especialidadId) => {
+    const response = await axiosInstance.get(`/medicos?especialidad=${especialidadId}`);
+    return response.data;
+  },
+
   // Obtener médico por ID
   obtenerMedico: async (id) => {
     const response = await axiosInstance.get(`/medicos/${id}`);

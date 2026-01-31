@@ -37,10 +37,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.login(email, password);
       
+      // El backend devuelve el usuario con el token incluido
+      const { token, ...userData } = response;
+      
       // Guardar token y usuario
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response));
-      setUser(response);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
       
       return response;
     } catch (error) {
@@ -57,10 +60,13 @@ export const AuthProvider = ({ children }) => {
         response = await authService.registerMedico(userData);
       }
       
+      // El backend devuelve el usuario con el token incluido
+      const { token, ...user } = response;
+      
       // Guardar token y usuario
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response));
-      setUser(response);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
       
       return response;
     } catch (error) {

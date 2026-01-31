@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { turnoService } from '../../api/turno.service';
 import { medicoService } from '../../api/medico.service';
 import { especialidadService } from '../../api/especialidad.service';
+import { useAuth } from '../../context/AuthContext';
 import { Calendar, AlertCircle } from 'lucide-react';
 
 const NuevoTurno = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     medicoId: '',
     especialidadId: '',
@@ -15,6 +17,7 @@ const NuevoTurno = () => {
     observaciones: '',
   });
   const [medicos, setMedicos] = useState([]);
+  const [medicosFiltrados, setMedicosFiltrados] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,6 +28,7 @@ const NuevoTurno = () => {
 
   const cargarDatos = async () => {
     try {
+      console.log('Iniciando carga de datos...');
       const [medicosData, especialidadesData] = await Promise.all([
         medicoService.listarMedicos(),
         especialidadService.listarEspecialidades(),
@@ -44,16 +48,35 @@ const NuevoTurno = () => {
         setError('No hay especialidades disponibles en este momento.');
       }
     } catch (err) {
-      console.error('Error al cargar datos:', err);
-      setError('Error al conectar con el servidor. Por favor, intente nuevamente.');
+      console.error('Error completo al cargar datos:', err);
+      console.error('Error response:', err.response);
+      console.error('Error message:', err.message);
+      setError(`Error al conectar con el servidor: ${err.response?.data?.message || err.message || 'Por favor, intente nuevamente.'}`);
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Si cambió la especialidad, filtrar médicos
+    if (name === 'especialidadId') {
+      setFormData(prev => ({ ...prev, medicoId: '' })); // Reset médico
+      if (value) {
+        try {
+          const medicosFiltrados = await medicoService.listarMedicosPorEspecialidad(value);
+          setMedicosFiltrados(medicosFiltrados || []);
+        } catch (err) {
+          console.error('Error al filtrar médicos:', err);
+          setMedicosFiltrados([]);
+        }
+      } else {
+        setMedicosFiltrados([]);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,11 +85,37 @@ const NuevoTurno = () => {
     setLoading(true);
 
     try {
-      await turnoService.crearTurno(formData);
+      if (!user || !user.id) {
+        setError('Error: Usuario no autenticado. Por favor, vuelve a iniciar sesión.');
+        setLoading(false);
+        return;
+      }
+
+      // Combinar fecha y hora en formato ISO
+      const fechaHora = `${formData.fecha}T${formData.horaInicio}:00`;
+      
+      const turnoData = {
+        pacienteId: user.id,
+        medicoId: parseInt(formData.medicoId),
+        fechaHora: fechaHora,
+        observaciones: formData.observaciones || null,
+      };
+
+      console.log('Usuario completo:', user);
+      console.log('FormData completo:', formData);
+      console.log('Enviando turno:', turnoData);
+      console.log('Tipo de pacienteId:', typeof turnoData.pacienteId);
+      console.log('Tipo de medicoId:', typeof turnoData.medicoId);
+      
+      await turnoService.crearTurno(turnoData);
       alert('Turno solicitado exitosamente');
       navigate('/paciente/turnos');
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al solicitar el turno. Intenta nuevamente.');
+      console.error('Error COMPLETO al crear turno:', err);
+      console.error('Error response:', err.response);
+      console.error('Error response data:', err.response?.data);
+      console.error('Error response status:', err.response?.status);
+      setError(err.response?.data?.message || err.response?.data?.error || 'Error al solicitar el turno. Intenta nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -119,12 +168,13 @@ const NuevoTurno = () => {
               required
               value={formData.medicoId}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              disabled={!formData.especialidadId}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               <option value="">Seleccionar médico</option>
-              {medicos.map((medico) => (
+              {medicosFiltrados.map((medico) => (
                 <option key={medico.id} value={medico.id}>
-                  Dr./Dra. {medico.nombre} {medico.apellido}
+                  Dr./Dra. {medico.nombreCompleto}
                 </option>
               ))}
             </select>

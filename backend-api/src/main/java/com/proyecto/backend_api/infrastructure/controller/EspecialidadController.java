@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/especialidades")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class EspecialidadController {
     private final EspeciliadadService especiliadadService;
     @GetMapping
