@@ -2,6 +2,8 @@ package com.proyecto.backend_api.domain.dto.request;
 
 import java.time.LocalDateTime;
 
+import com.proyecto.backend_api.domain.enums.TipoConsulta;
+
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,9 @@ public class CrearTurnoRequest {
     @NotNull(message = "La fecha y hora son obligatorias")
     @Future(message = "La fecha debe ser futura")
     private LocalDateTime fechaHora;
+
+    @NotNull(message = "El tipo de consulta es obligatorio")
+    private TipoConsulta tipoConsulta;
 
     private String observaciones;
 
