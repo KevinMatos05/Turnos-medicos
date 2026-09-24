@@ -12,6 +12,7 @@ import com.proyecto.backend_api.domain.dto.response.UsuarioResponse;
 import com.proyecto.backend_api.domain.model.Usuario;
 import com.proyecto.backend_api.domain.repository.UsuarioRepository;
 import com.proyecto.backend_api.infrastructure.JwtTokenProvider;
+import com.proyecto.backend_api.infrastructure.exception.UnauthorizedException;
 
 @Service
 public class AuthService {
@@ -40,7 +41,7 @@ public class AuthService {
                 .token(token)
                 .build();
         }
-        throw new RuntimeException("Credenciales inválidas");   
+        throw new UnauthorizedException("Credenciales inválidas");   
     }
 
     public void register (Usuario usuario) {

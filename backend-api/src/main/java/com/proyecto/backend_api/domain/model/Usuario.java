@@ -14,7 +14,12 @@ import lombok.AllArgsConstructor;
 import jakarta.persistence.GenerationType;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +29,10 @@ import java.util.Collections;
 
 @Entity
 @Data
+@Getter 
+@Setter 
+@ToString(exclude = "password")
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
