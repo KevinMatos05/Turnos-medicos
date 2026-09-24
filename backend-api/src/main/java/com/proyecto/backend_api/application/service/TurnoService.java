@@ -12,13 +12,16 @@ import com.proyecto.backend_api.application.usecase.ConfirmarTurnoUseCase;
 import com.proyecto.backend_api.domain.dto.request.CrearTurnoRequest;
 import com.proyecto.backend_api.domain.dto.response.TurnoResponse;
 import com.proyecto.backend_api.domain.enums.EstadoTurno;
+import com.proyecto.backend_api.domain.enums.Rol;
 import com.proyecto.backend_api.domain.model.Paciente;
 import com.proyecto.backend_api.domain.model.Turno;
+import com.proyecto.backend_api.domain.model.Usuario;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.repository.TurnoRepository;
 import com.proyecto.backend_api.domain.model.Sucursal;
 import com.proyecto.backend_api.infrastructure.exception.BusinessException;
 import com.proyecto.backend_api.infrastructure.exception.ResourceNotFoundException;
+import com.proyecto.backend_api.infrastructure.exception.UnauthorizedException;
 import com.proyecto.backend_api.domain.repository.PacienteRepository;
 import com.proyecto.backend_api.domain.repository.MedicoRepository;
 import com.proyecto.backend_api.domain.repository.SucursalRepository;
@@ -69,6 +72,7 @@ public class TurnoService {
 
         if (request.getSucursalId() != null) {
             Sucursal sucursal = sucursalRepository.findById(request.getSucursalId()).orElseThrow(()-> new ResourceNotFoundException("No existe una sucursal con ese id " + request.getSucursalId()));
+            turnoBuilder.sucursal(sucursal);
         } else if (medico.getSucursal() != null) {
             turnoBuilder.sucursal(medico.getSucursal());
         } 
@@ -89,18 +93,57 @@ public class TurnoService {
         return turnoRepository.findById(id).map(TurnoResponse::new);
     }
 
-    public void cancelarTurno(Long id) {
-        cancelarTurnoUseCase.cancelarTurno(id);
+    public void cancelarTurno(Long id, Usuario usuarioActual) {
+        Turno turno = turnoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Turno no encontrado"));
+        verificarAcceso(turno,usuarioActual);
+        if (usuarioActual.getRol() == Rol.MEDICO) {
+            cancelarTurnoUseCase.cancelarTurnoPorMedico(id, "Cancelado por el médico");
+        } else {
+            cancelarTurnoUseCase.cancelarTurnoPorPaciente(id, "Cancelado por paciente");
+        }
+
     }
 
-    public List<TurnoResponse> listarTurnos() {
-        return obtenerTurnos();
+    private void verificarAcceso(Turno turno, Usuario usuarioActual) {
+        if (usuarioActual.getRol() == Rol.ADMIN) {
+            return; 
+        }
+
+        if (usuarioActual.getRol() == Rol.PACIENTE && turno.getPaciente() != null && turno.getPaciente().getUsuario().getId().equals(usuarioActual.getId())) {
+            return;
+        }
+
+        if (usuarioActual.getRol() == Rol.MEDICO && turno.getMedico() != null && turno.getMedico().getUsuario().getId().equals(usuarioActual.getId())) {
+            return ;
+        }
+
+        throw new UnauthorizedException("No tenes permiso para acceder a este turno");
+
     }
 
-    public TurnoResponse obtenerTurnos(Long id) {
-        return obtenerTurnosPorId(id)
-            .orElseThrow(() -> new RuntimeException("Turno no encontrado0"));
+    public List<TurnoResponse> listarTurnos(Usuario usuarioActual) {
+        List<Turno> turnos = switch (usuarioActual.getRol()) {
+            case ADMIN -> turnoRepository.findAll();
+            case PACIENTE -> {
+                Paciente paciente = pacienteRepository.findByUsuario(usuarioActual).orElseThrow(()-> new ResourceNotFoundException("No se encontró el paciente asociado a este usuario"));
+                yield turnoRepository.findByPacienteOrderByFechaHoraDesc(paciente);
+            }
+            case MEDICO -> {
+                Medico medico = medicoRepository.findByUsuario(usuarioActual).orElseThrow(()->new ResourceNotFoundException("No se encontró el médico asociado a este usuario"));
+                yield turnoRepository.findByMedicoOrderByFechaHoraDesc(medico);
+            }
+        };
+        return turnos.stream().map(TurnoResponse::new).toList();
+
     }
+
+    public TurnoResponse obtenerTurnos(Long id, Usuario usuarioActual) {
+        Turno turno = turnoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Turno no encontrado"));
+
+        verificarAcceso(turno, usuarioActual);
+        return new TurnoResponse(turno);
+    }
+
 
     public List<TurnoResponse> obtenerTurnosPorPaciente(Paciente paciente) {
         List<Turno> turnos = turnoRepository.findByPacienteOrderByFechaHoraDesc(paciente);

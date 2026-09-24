@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "jwt")
 public class JwtConfig {
-    private String secret;
+    private String secretKey;
     private long expiration;
     private String prefix;
 
-    public String getSecret() {
-        return secret;
+    public String getSecretKey() {
+        return secretKey;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setSecret(String secretKey) {
+        this.secretKey = secretKey;
     }
 
     public long getExpiration() {

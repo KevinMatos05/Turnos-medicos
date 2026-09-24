@@ -3,6 +3,8 @@ package com.proyecto.backend_api.domain.repository;
 import com.proyecto.backend_api.domain.model.Especialidad;
 import com.proyecto.backend_api.domain.model.Medico;
 import com.proyecto.backend_api.domain.model.Sucursal;
+import com.proyecto.backend_api.domain.model.Usuario;
+
 
 import java.time.DayOfWeek;
 import java.util.List;
@@ -23,6 +25,8 @@ public interface MedicoRepository extends JpaRepository <Medico, Long> {
     List<Medico> findBySucursalAndActivoTrue(Sucursal sucursal);
 
     Optional<Medico> findByMatricula(String matricula);
+    
+    Optional<Medico> findByUsuario(Usuario usuario);
 
     @Query("SELECT m FROM Medico m WHERE m.especialidad.id = :especialidadId AND m.activo = true")
     List<Medico> findByEspecialidadId(@Param("especialidadId") Long especialidadId);

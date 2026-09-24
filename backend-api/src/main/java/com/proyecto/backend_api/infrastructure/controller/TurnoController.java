@@ -3,6 +3,7 @@ package com.proyecto.backend_api.infrastructure.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.backend_api.application.service.TurnoService;
 import com.proyecto.backend_api.domain.dto.request.CrearTurnoRequest;
 import com.proyecto.backend_api.domain.dto.response.TurnoResponse;
+import com.proyecto.backend_api.domain.model.Usuario;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,8 +59,8 @@ public class TurnoController {
         @ApiResponse(responseCode = "401", description = "No autorizado")
 
     })
-    public ResponseEntity<TurnoResponse> obtenerTurno(@PathVariable Long id) {
-        TurnoResponse turnoResponse = turnoService.obtenerTurnos(id);
+    public ResponseEntity<TurnoResponse> obtenerTurno(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+        TurnoResponse turnoResponse = turnoService.obtenerTurnos(id, usuario);
         return ResponseEntity.ok(turnoResponse);
     }
 
@@ -68,8 +70,8 @@ public class TurnoController {
             @ApiResponse(responseCode = "200", description = "Lista de turnos obtenido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TurnoResponse.class)))
     })
 
-    public ResponseEntity<List<TurnoResponse>> listarTurnos() {
-        List<TurnoResponse> turnos = turnoService.listarTurnos();
+    public ResponseEntity<List<TurnoResponse>> listarTurnos(@AuthenticationPrincipal Usuario usuario) {
+        List<TurnoResponse> turnos = turnoService.listarTurnos(usuario);
         return ResponseEntity.ok(turnos);
     }
 
@@ -82,8 +84,8 @@ public class TurnoController {
 
     })
 
-    public ResponseEntity<Void> cancelarTurno(@PathVariable Long id) {
-        turnoService.cancelarTurno(id);
+    public ResponseEntity<Void> cancelarTurno(@PathVariable Long id, @AuthenticationPrincipal  Usuario usuario) {
+        turnoService.cancelarTurno(id, usuario) ;
         return ResponseEntity.noContent().build();
     }
     

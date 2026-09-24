@@ -15,6 +15,8 @@ import java.util.List;
 @Repository
 public interface TurnoRepository extends JpaRepository<Turno, Long> {
     List<Turno> findByPacienteOrderByFechaHoraDesc(Paciente paciente);
+
+    List<Turno> findByMedicoOrderByFechaHoraDesc(Medico medico);
     
     List<Turno> findByMedicoAndFechaHoraBetweenOrderByFechaHora(
         Medico medico, 
